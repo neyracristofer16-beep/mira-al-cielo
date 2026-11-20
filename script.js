@@ -213,12 +213,35 @@ function frame(now){
   requestAnimationFrame(frame);
 }
 
-/* ===== MUSICA AUTOMATICA ===== */
+/* ===== MUSICA EN BUCLE ===== */
 const musica = document.getElementById('musica');
-musica.volume = 0.4;
-musica.play().catch(() => {
-  console.log('El navegador bloqueó la reproducción automática. Puede requerir una interacción.');
-});
+
+if (musica) {
+    musica.volume = 0.4;
+    musica.loop = true;
+
+    let iniciada = false;
+
+    function iniciarMusica() {
+        if (iniciada) return;
+
+        musica.play()
+            .then(() => {
+                iniciada = true;
+                console.log("Música iniciada correctamente");
+            })
+            .catch(error => {
+                console.log("Esperando interacción para reproducir música");
+            });
+    }
+
+    // Intenta reproducirla al cargar la página
+    iniciarMusica();
+
+    // Si el navegador bloquea el autoplay, espera el primer clic o toque
+    document.addEventListener("click", iniciarMusica, { once: true });
+    document.addEventListener("touchstart", iniciarMusica, { once: true });
+}
 
 /* ===== H. ARRANQUE ===== */
 addEventListener('resize',resize);
